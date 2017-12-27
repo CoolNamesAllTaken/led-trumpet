@@ -1,8 +1,10 @@
 #include <Adafruit_NeoPixel.h>
+#include <Bounce.h>
 
 #define BUTTON_1_PIN 2
 #define BUTTON_2_PIN 3
 #define BUTTON_3_PIN 4
+#define DEBOUNCE_TIME 20 // ms button debounce time
 
 #define LEFT_STRIP_PIN 10
 #define RIGHT_STRIP_PIN 8
@@ -10,7 +12,7 @@
 #define RIGHT_STRIP_NUM_LEDS 23
 
 #define NUM_PATTERNS 2
-#define BRIGHTNESS_STEP 50 // step size for increasing or decreasing brightness
+#define BRIGHTNESS_STEP 51 // step size for increasing or decreasing brightness
 
 #define MIC_PIN A0
 #define MIC_GAIN_PIN 6
@@ -26,6 +28,10 @@ Adafruit_NeoPixel left_strip = Adafruit_NeoPixel(LEFT_STRIP_NUM_LEDS, LEFT_STRIP
 Adafruit_NeoPixel right_strip = Adafruit_NeoPixel(RIGHT_STRIP_NUM_LEDS, RIGHT_STRIP_PIN, NEO_GRBW + NEO_KHZ800);
 
 int pattern = 0; // current pattern
+
+Bounce button1 = Bounce(BUTTON_1_PIN, DEBOUNCE_TIME);
+Bounce button2 = Bounce(BUTTON_2_PIN, DEBOUNCE_TIME);
+Bounce button3 = Bounce(BUTTON_3_PIN, DEBOUNCE_TIME);
 
 void setup() {
   Serial.begin(115200);
@@ -46,14 +52,13 @@ void setup() {
 
   rainbow_setup();
   red_blue_setup();
-
-  attachInterrupt(digitalPinToInterrupt(BUTTON_1_PIN), changePattern, FALLING);
-  attachInterrupt(digitalPinToInterrupt(BUTTON_2_PIN), decreaseMaxBrightness, FALLING);
-  attachInterrupt(digitalPinToInterrupt(BUTTON_3_PIN), increaseMaxBrightness, FALLING);
 }
 
-unsigned int last_button_1_state = true;
 void loop() {
+  if (button1.update() && button1.fallingEdge()) changePattern();
+  if (button2.update() && button2.fallingEdge()) decreaseMaxBrightness();
+  if (button3.update() && button3.fallingEdge()) increaseMaxBrightness();
+
   if (pattern == 0) {
     rainbow();
   } else if (pattern == 1) {
