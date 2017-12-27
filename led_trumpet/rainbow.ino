@@ -21,7 +21,7 @@ void rainbow_setup() {
 }
 
 void rainbow() {
-  uint8_t volume = readMic(255); // set white max_brightness based on sound
+  uint8_t volume = 0/*readMic(255)*/; // set white max_brightness based on sound
   
   for(uint16_t j=0; j<256; j+=RNBW_LED_COLOR_MOVE_SPEED) {
     // iterate over color offset

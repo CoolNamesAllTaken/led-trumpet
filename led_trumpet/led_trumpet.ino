@@ -4,14 +4,14 @@
 #define BUTTON_1_PIN 2
 #define BUTTON_2_PIN 3
 #define BUTTON_3_PIN 4
-#define DEBOUNCE_TIME 20 // ms button debounce time
+#define DEBOUNCE_TIME 10 // ms button debounce time
 
 #define LEFT_STRIP_PIN 10
 #define RIGHT_STRIP_PIN 8
 #define LEFT_STRIP_NUM_LEDS 26
 #define RIGHT_STRIP_NUM_LEDS 23
 
-#define NUM_PATTERNS 2
+#define NUM_PATTERNS 3
 #define BRIGHTNESS_STEP 51 // step size for increasing or decreasing brightness
 
 #define MIC_PIN A0
@@ -52,6 +52,7 @@ void setup() {
 
   rainbow_setup();
   red_blue_setup();
+  equalizer_setup();
 }
 
 void loop() {
@@ -63,6 +64,8 @@ void loop() {
     rainbow();
   } else if (pattern == 1) {
     red_blue();
+  } else if (pattern == 2) {
+    equalizer();
   }
 
 }
