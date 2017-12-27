@@ -8,16 +8,19 @@
 #define RIGHT_STRIP_PIN 8
 #define LEFT_STRIP_NUM_LEDS 26
 #define RIGHT_STRIP_NUM_LEDS 23
-#define BRIGHTNESS 255
 
 #define NUM_PATTERNS 2
+#define BRIGHTNESS_STEP 50 // step size for increasing or decreasing brightness
 
-#define MIC_PIN A2
+#define MIC_PIN A0
+#define MIC_GAIN_PIN 6
 #define MIC_OUTPUT_MAX 1024
 #define MIC_OUTPUT_MIN 200
 #define MIC_READ_TIME 50
 
 #define WHITE_NOISE_THRESHOLD 600
+
+int max_brightness = 255; // maximum LED brightness
 
 Adafruit_NeoPixel left_strip = Adafruit_NeoPixel(LEFT_STRIP_NUM_LEDS, LEFT_STRIP_PIN, NEO_GRBW + NEO_KHZ800);
 Adafruit_NeoPixel right_strip = Adafruit_NeoPixel(RIGHT_STRIP_NUM_LEDS, RIGHT_STRIP_PIN, NEO_GRBW + NEO_KHZ800);
@@ -29,27 +32,32 @@ void setup() {
 
   pinMode(BUTTON_1_PIN, INPUT_PULLUP);
   pinMode(BUTTON_2_PIN, INPUT_PULLUP);
-  pinMode(BUTTON_2_PIN, INPUT_PULLUP);
+  pinMode(BUTTON_3_PIN, INPUT_PULLUP);
 
-  attachInterrupt(digitalPinToInterrupt(BUTTON_1_PIN), changePattern, FALLING);
+  pinMode(MIC_GAIN_PIN, OUTPUT);
+  digitalWrite(MIC_GAIN_PIN, 0);
   
-  left_strip.setBrightness(BRIGHTNESS);
+  left_strip.setBrightness(max_brightness);
   left_strip.begin();
   left_strip.show(); // initialize all pixels to 'off'
-  right_strip.setBrightness(BRIGHTNESS);
+  right_strip.setBrightness(max_brightness);
   right_strip.begin();
   right_strip.show(); // initialize all pixels to 'off'
 
   rainbow_setup();
   red_blue_setup();
+
+  attachInterrupt(digitalPinToInterrupt(BUTTON_1_PIN), changePattern, FALLING);
+  attachInterrupt(digitalPinToInterrupt(BUTTON_2_PIN), decreaseMaxBrightness, FALLING);
+  attachInterrupt(digitalPinToInterrupt(BUTTON_3_PIN), increaseMaxBrightness, FALLING);
 }
 
 unsigned int last_button_1_state = true;
 void loop() {
   if (pattern == 0) {
-    red_blue();
-  } else if (pattern == 1) {
     rainbow();
+  } else if (pattern == 1) {
+    red_blue();
   }
 
 }
@@ -57,6 +65,16 @@ void loop() {
 void changePattern() {
   pattern ++;
   if (pattern >= NUM_PATTERNS) pattern = 0;
+}
+
+void decreaseMaxBrightness() {
+  max_brightness -= BRIGHTNESS_STEP;
+  if (max_brightness < 0) max_brightness = 0;
+}
+
+void increaseMaxBrightness() {
+  max_brightness += BRIGHTNESS_STEP;
+  if (max_brightness > 255) max_brightness = 255;
 }
 
 // Input a value 0 to 255 to get a color value.

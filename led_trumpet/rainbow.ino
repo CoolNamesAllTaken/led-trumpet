@@ -16,20 +16,20 @@ bool rnbw_active_accents[max(LEFT_STRIP_NUM_LEDS, RIGHT_STRIP_NUM_LEDS)]; // arr
 bool rnbw_idle_accents[max(LEFT_STRIP_NUM_LEDS, RIGHT_STRIP_NUM_LEDS)];
 
 void rainbow_setup() {
-  setAccents(rnbw_active_accents, RNBW_LED_ACTIVE_ACCENT_LENGTH, RNBW_LED_ACTIVE_ACCENT_SPACING);
-  setAccents(rnbw_idle_accents, RNBW_LED_IDLE_ACCENT_LENGTH, RNBW_LED_IDLE_ACCENT_SPACING);
+  rnbw_setAccents(rnbw_active_accents, RNBW_LED_ACTIVE_ACCENT_LENGTH, RNBW_LED_ACTIVE_ACCENT_SPACING);
+  rnbw_setAccents(rnbw_idle_accents, RNBW_LED_IDLE_ACCENT_LENGTH, RNBW_LED_IDLE_ACCENT_SPACING);
 }
 
 void rainbow() {
-  uint8_t volume = readMic(255); // set white brightness based on sound
+  uint8_t volume = readMic(255); // set white max_brightness based on sound
   
   for(uint16_t j=0; j<256; j+=RNBW_LED_COLOR_MOVE_SPEED) {
     // iterate over color offset
     
     if ((millis() / RNBW_LED_ACCENT_MOVE_SPEED) % 2) {
       // shift accent
-      if (volume > 0) moveAccents(rnbw_active_accents, RNBW_LED_ACCENT_MOVE_DIST);
-      else moveAccents(rnbw_idle_accents, RNBW_LED_ACCENT_MOVE_DIST);
+      if (volume > 0) rnbw_moveAccents(rnbw_active_accents, RNBW_LED_ACCENT_MOVE_DIST);
+      else rnbw_moveAccents(rnbw_idle_accents, RNBW_LED_ACCENT_MOVE_DIST);
     }
 
     for(uint16_t i=0; i<left_strip.numPixels(); i++) {
@@ -40,19 +40,19 @@ void rainbow() {
         // play "active" animation (rainbow)
         if (rnbw_active_accents[i]) {
           // led is part of active accent
-          left_strip.setPixelColor(i, 255, 255, 255, 255);
+          left_strip.setPixelColor(i, max_brightness, max_brightness, max_brightness, max_brightness);
         } else {
           // led is active
-          left_strip.setPixelColor(i, red(color), green(color), blue(color), 0);
+          left_strip.setPixelColor(i, red(color) * max_brightness/255, green(color) * max_brightness/255, blue(color) * max_brightness/255, 0);
         }
       } else {
         // play "idle" animation
         if (rnbw_idle_accents[i]) {
             // led is part of idle accent
-            left_strip.setPixelColor(i, 0, 0, 0, 255);
+            left_strip.setPixelColor(i, 0, 0, 0, 255 * max_brightness/255);
           } else {
             // led is idle
-            left_strip.setPixelColor(i, red(color) / 4, green(color) / 4, blue(color) / 4, 0);
+            left_strip.setPixelColor(i, red(color) / 4 * max_brightness/255, green(color) / 4 * max_brightness/255, blue(color) / 4 * max_brightness/255, 0);
           }
       }
     }
@@ -64,19 +64,19 @@ void rainbow() {
         // play "active" animation (rainbow)
         if (rnbw_active_accents[i]) {
           // led is part of active accent
-          right_strip.setPixelColor(i, 255, 255, 255, 255);
+          right_strip.setPixelColor(i, max_brightness, max_brightness, max_brightness, max_brightness);
         } else {
           // led is active
-          right_strip.setPixelColor(i, red(color), green(color), blue(color), 0);
+          right_strip.setPixelColor(i, red(color) * max_brightness/255, green(color) * max_brightness/255, blue(color) * max_brightness/255, 0);
         }
       } else {
         // play "idle" animation
         if (rnbw_idle_accents[i]) {
             // led is part of idle accent
-            right_strip.setPixelColor(i, 0, 0, 0, 255);
+            right_strip.setPixelColor(i, 0, 0, 0, max_brightness);
           } else {
             // led is idle
-            right_strip.setPixelColor(i, red(color) / 4, green(color) / 4, blue(color) / 4, 0);
+            right_strip.setPixelColor(i, red(color) / 4 * max_brightness/255, green(color) / 4 * max_brightness/255, blue(color) / 4 * max_brightness/255, 0);
           }
       }
     }
@@ -87,7 +87,7 @@ void rainbow() {
 }
 
 // Initializes an accent array.  Assumes accent_leds has length LEFT_STRIP_NUM_LEDS
-void setAccents(bool accent_leds[], int led_accent_length, int led_accent_spacing) {
+void rnbw_setAccents(bool accent_leds[], int led_accent_length, int led_accent_spacing) {
   // initialize accent pixels to be off
   for (int i = 0; i < LEFT_STRIP_NUM_LEDS; i++) {
     accent_leds[i] = false;
@@ -102,7 +102,7 @@ void setAccents(bool accent_leds[], int led_accent_length, int led_accent_spacin
 }
 
 // Moves an accent array.  Assumes accent_leds has length LEFT_STRIP_NUM_LEDS
-void moveAccents(bool accent_leds[], int dist) {
+void rnbw_moveAccents(bool accent_leds[], int dist) {
   for (int i = 0; i < LEFT_STRIP_NUM_LEDS; i++) {
   }
   

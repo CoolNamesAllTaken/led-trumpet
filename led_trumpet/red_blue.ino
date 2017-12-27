@@ -13,12 +13,12 @@ void red_blue_setup() {
 void red_blue() {
 	if (rb_flash_sequence[rb_flash_sequence_index]) {
 		// strobe on
-		if (flash_red) rb_set_red(BRIGHTNESS);
-		else rb_set_blue(BRIGHTNESS);
+		if (flash_red) rb_setRed(max_brightness);
+		else rb_setBlue(max_brightness);
 	} else {
 		// strobe off
-		if(flash_red) rb_set_red(0);
-		else rb_set_blue(0);
+		if(flash_red) rb_setRed(0);
+		else rb_setBlue(0);
 	}
   rb_flash_sequence_index ++;
   if (rb_flash_sequence_index >= rb_flash_sequence_length) {
@@ -30,20 +30,20 @@ void red_blue() {
   delay(RB_WAIT);
 }
 
-void rb_set_red(uint8_t brightness) {
+void rb_setRed(uint8_t max_brightness) {
 	for (int i=0; i < LEFT_STRIP_NUM_LEDS/2; i++) {
-		left_strip.setPixelColor(i, brightness, 0, 0, 0);
+		left_strip.setPixelColor(i, max_brightness, 0, 0, 0);
 	}
 	for (int i=0; i < RIGHT_STRIP_NUM_LEDS/2; i++) {
-		right_strip.setPixelColor(i, brightness, 0, 0, 0);
+		right_strip.setPixelColor(i, max_brightness, 0, 0, 0);
 	}
 }
 
-void rb_set_blue(uint8_t brightness) {
+void rb_setBlue(uint8_t max_brightness) {
 	for (int i=LEFT_STRIP_NUM_LEDS/2; i < LEFT_STRIP_NUM_LEDS; i++) {
-		left_strip.setPixelColor(i, 0, 0, brightness, 0);
+		left_strip.setPixelColor(i, 0, 0, max_brightness, 0);
 	}
 	for (int i=RIGHT_STRIP_NUM_LEDS/2; i < RIGHT_STRIP_NUM_LEDS; i++) {
-		right_strip.setPixelColor(i, 0, 0, brightness, 0);
+		right_strip.setPixelColor(i, 0, 0, max_brightness, 0);
 	}
 }
