@@ -7,7 +7,7 @@ unsigned int rb_flash_sequence_index = 0;
 bool flash_red = true;
 
 void red_blue_setup() {
-  rb_flash_sequence_length = sizeof(rb_flash_sequence) / sizeof(bool);
+	rb_flash_sequence_length = sizeof(rb_flash_sequence) / sizeof(bool);
 }
 
 void red_blue() {
@@ -20,14 +20,14 @@ void red_blue() {
 		if(flash_red) rb_setRed(0);
 		else rb_setBlue(0);
 	}
-  rb_flash_sequence_index ++;
-  if (rb_flash_sequence_index >= rb_flash_sequence_length) {
-  	rb_flash_sequence_index = 0;
-  	flash_red = !flash_red;
-  }
-  left_strip.show();
-  right_strip.show();
-  delay(RB_WAIT);
+	rb_flash_sequence_index ++;
+	if (rb_flash_sequence_index >= rb_flash_sequence_length) {
+		rb_flash_sequence_index = 0;
+		flash_red = !flash_red;
+	}
+	left_strip.show();
+	right_strip.show();
+	delay(RB_WAIT);
 }
 
 void rb_setRed(uint8_t max_brightness) {
