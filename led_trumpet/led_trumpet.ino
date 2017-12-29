@@ -11,7 +11,6 @@
 #define LEFT_STRIP_NUM_LEDS 26
 #define RIGHT_STRIP_NUM_LEDS 23
 
-#define NUM_PATTERNS 3
 #define BRIGHTNESS_STEP 51 // step size for increasing or decreasing brightness
 
 #define MIC_PIN A0
@@ -52,28 +51,40 @@ void setup() {
 
 	rainbow_setup();
 	red_blue_setup();
-	equalizer_setup();
+	spectrum_analyzer_setup();
+	snake_setup();
 }
 
 void loop() {
-	if (button1.update() && button1.fallingEdge()) changePattern();
-	if (button2.update() && button2.fallingEdge()) decreaseMaxBrightness();
-	if (button3.update() && button3.fallingEdge()) increaseMaxBrightness();
-
 	if (pattern == 0) {
 		rainbow();
 	} else if (pattern == 1) {
 		red_blue();
 	} else if (pattern == 2) {
-		equalizer();
+		spectrum_analyzer();
+	} else if (pattern == 3) {
+		snake();
+	} else {
+		pattern = 0; // loop back around
 	}
 
+}
+
+bool checkButtons() {
+	if (button2.update() && button2.fallingEdge()) decreaseMaxBrightness();
+	if (button3.update() && button3.fallingEdge()) increaseMaxBrightness();
+
+	if (button1.update() && button1.fallingEdge()) {
+		changePattern();
+		return false; // pattern has changed
+	} else {
+		return true; // pattern has not changed
+	}
 }
 
 void changePattern() {
 	clearStrips();
 	pattern ++;
-	if (pattern >= NUM_PATTERNS) pattern = 0;
 }
 
 void decreaseMaxBrightness() {
