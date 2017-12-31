@@ -32,6 +32,9 @@ Bounce button1 = Bounce(BUTTON_1_PIN, DEBOUNCE_TIME);
 Bounce button2 = Bounce(BUTTON_2_PIN, DEBOUNCE_TIME);
 Bounce button3 = Bounce(BUTTON_3_PIN, DEBOUNCE_TIME);
 
+// function prototypes
+void changePattern(int patternIn = -1);
+
 void setup() {
 	Serial.begin(115200);
 
@@ -71,8 +74,11 @@ void loop() {
 }
 
 bool checkButtons() {
-	if (button2.update() && button2.fallingEdge()) decreaseMaxBrightness();
-	if (button3.update() && button3.fallingEdge()) increaseMaxBrightness();
+	if (digitalRead(BUTTON_2_PIN) == LOW && digitalRead(BUTTON_3_PIN) == LOW) {
+		changePattern(3);
+		return false;
+	} else if (button2.update() && button2.fallingEdge()) decreaseMaxBrightness();
+	else if (button3.update() && button3.fallingEdge()) increaseMaxBrightness();
 
 	if (button1.update() && button1.fallingEdge()) {
 		changePattern();
@@ -82,9 +88,10 @@ bool checkButtons() {
 	}
 }
 
-void changePattern() {
+void changePattern(int patternIn) {
 	clearStrips();
-	pattern ++;
+	if (patternIn == -1) pattern ++;
+	else pattern = patternIn;
 }
 
 void decreaseMaxBrightness() {

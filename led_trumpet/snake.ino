@@ -1,4 +1,5 @@
-#define SK_DELAY 200 // game time step (ms)
+#define SK_INIT_DELAY 200 // game time step (ms)
+#define SK_DELAY_STEP 5 // game delay step (ms)
 
 void snake_setup() {}
 
@@ -28,12 +29,19 @@ void snake() {
 			positions[snakeLength - 1] = positions[snakeLength - 2] - velocity;
 
 			if (snakeLength >= maxSnakeLength) {
-				changePattern();
+				changePattern(); // win state
 				return;
 			}
 
 			// update food position
 			foodPosition = millis() % maxSnakeLength; // use millis() as a random number
+		}
+
+		// check for loss condition
+		if (positions[0] < 0 || positions[0] > max(LEFT_STRIP_NUM_LEDS, RIGHT_STRIP_NUM_LEDS)) {
+			sk_lose(positions, snakeLength); // lose state
+			changePattern();
+			return;
 		}
 
 		// draw the snake
@@ -64,6 +72,17 @@ void snake() {
 			Serial.printf("%d ", positions[i]);
 		}
 		Serial.println();
-		delay(SK_DELAY);
+		delay(SK_INIT_DELAY - snakeLength * SK_DELAY_STEP);
 	}
+}
+
+void sk_lose(int positions[], int snakeLength) {
+	clearStrips();
+	for (int i=0; i<snakeLength; i++) {
+		left_strip.setPixelColor(positions[i], max_brightness, 0, 0, 0);
+		right_strip.setPixelColor(positions[i], max_brightness, 0, 0, 0);
+	}
+	left_strip.show();
+	right_strip.show();
+	delay(2000);
 }
