@@ -4,6 +4,10 @@
 #define SA_LEFT_STRIP_START_LED 6
 #define SA_RIGHT_STRIP_START_LED 0
 
+#define SA_COLOR_STEP 15
+#define SA_COLOR_THRESHOLD 0.2
+#define SA_WHITE_THRESHOLD 0.7
+
 // contains code from https://forum.pjrc.com/threads/45418-FFT-analysis-using-teensy-3-2
 
 AudioInputAnalog         adc1(MIC_PIN);             //default for adc1 is A2
@@ -54,14 +58,19 @@ void spectrum_analyzer() {
 
 		int left_strip_num_bins = min(LEFT_STRIP_NUM_LEDS - SA_LEFT_STRIP_START_LED, 16);
 		for (int i=0; i < left_strip_num_bins; i++) {
-			int line = levels[i] * 100;
-			left_strip.setPixelColor(i+SA_LEFT_STRIP_START_LED, 0, 0, 0, line / 128 * max_brightness);
+			left_strip.setPixelColor(i+SA_LEFT_STRIP_START_LED, \
+				levels[i] > SA_COLOR_THRESHOLD? (255 - SA_COLOR_STEP*i) : 0, \
+				levels[i] > SA_COLOR_THRESHOLD? i*SA_COLOR_STEP * levels[i] : 0, \
+				0, levels[i] > SA_WHITE_THRESHOLD? 255 : 0);
 		}
 
 		int right_strip_num_bins = min(RIGHT_STRIP_NUM_LEDS - SA_RIGHT_STRIP_START_LED, 16);
 		for (int i=0; i < right_strip_num_bins; i++) {
 			int line = levels[i] * 100;
-			right_strip.setPixelColor(i+SA_RIGHT_STRIP_START_LED, 0, 0, 0, line / 128 * max_brightness);
+			right_strip.setPixelColor(i+SA_RIGHT_STRIP_START_LED, \
+				levels[i] > SA_COLOR_THRESHOLD? (255 - SA_COLOR_STEP*i) : 0, \
+				levels[i] > SA_COLOR_THRESHOLD? i*SA_COLOR_STEP * levels[i] : 0, \
+				0, levels[i] > SA_WHITE_THRESHOLD? 255 : 0);
 		}
 
 		left_strip.show();
