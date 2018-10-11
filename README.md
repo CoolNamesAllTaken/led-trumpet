@@ -1,12 +1,12 @@
 John McNelly
 
-(johnmcnelly.com)[http://johnmcnelly.com]
+[johnmcnelly.com](http://johnmcnelly.com)
 
 ## Overview
 This project provides Teensyduino code for a trumpet-mounted LED system.  The LEDs used in this project are a SK6812 package, and the code is intended to run on a Teensy 3.2 or similar device.
 
 ## Hardware
-More project info will be posted to (johnmcnelly.com)[http://johnmcnelly.com].  This README will be updated with images soon.
+More project info will be posted to [johnmcnelly.com](http://johnmcnelly.com).  This README will be updated with images soon.
 
 ### Component List
 - Teensy 3.2
